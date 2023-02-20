@@ -1,0 +1,13 @@
+asp.net core api .net 6
+swagger
+postman
+
+logging
+serilog
+seq
+https://datalust.co/seq
+http://localhost:5341
+user: admin
+pwd: Salam_234
+
+cors
