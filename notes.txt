@@ -11,3 +11,17 @@ user: admin
 pwd: Salam_234
 
 cors
+
+git
+github
+https://github.com/kouroshsalahshoor/BlazorApp-Net6
+
+Sql Server DB
+(localdb)\MSSQLLocalDB
+
+Entity Framework Code first
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Tools
+
+Migration
+
