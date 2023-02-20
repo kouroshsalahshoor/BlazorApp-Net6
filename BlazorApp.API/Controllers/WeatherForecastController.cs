@@ -21,11 +21,11 @@ namespace BlazorApp.API.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
-            _logger.LogInformation(">>> call to GetWeatherForecast");
+            //_logger.LogInformation(">>> call to GetWeatherForecast");
 
             try
             {
-                throw new Exception(">>> GetWeatherForecast exception");
+                //throw new Exception(">>> GetWeatherForecast exception");
                 return Enumerable.Range(1, 5).Select(index => new WeatherForecast
                 {
                     Date = DateTime.Now.AddDays(index),

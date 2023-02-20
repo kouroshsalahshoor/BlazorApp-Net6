@@ -1,4 +1,5 @@
 using BlazorApp.API.Data;
+using BlazorApp.API.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -20,6 +21,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", b=> b.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 });
+
+builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 var app = builder.Build();
 

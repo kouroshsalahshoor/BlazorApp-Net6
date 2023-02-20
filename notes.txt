@@ -25,3 +25,7 @@ Microsoft.EntityFrameworkCore.Tools
 
 Migration
 
+api
+Automapper
+Dtos
+DataAnnotation
