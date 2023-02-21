@@ -2,6 +2,7 @@ using BlazorApp.API.Data;
 using BlazorApp.API.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddControllers();
+//A possible object cycle was detected
+//https://learn.microsoft.com/en-us/ef/core/querying/related-data/serialization
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+//builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -19,7 +24,7 @@ builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", b=> b.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
+    options.AddPolicy("AllowAll", b => b.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 });
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));

@@ -27,7 +27,7 @@ namespace BlazorApp.API.Controllers
         {
             try
             {
-                return await _db.Authors.ToListAsync();
+                return await _db.Authors.Include(x=>x.Books).ToListAsync();
             }
             catch (Exception ex)
             {
