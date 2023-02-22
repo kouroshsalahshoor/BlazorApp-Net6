@@ -1,3 +1,5 @@
+Udemy - Complete Blazor (WASM & Server) and ASP.NET API Development 2021-12
+===========================================================================
 asp.net core api .net 6
 swagger
 postman
@@ -31,4 +33,17 @@ Dtos
 DataAnnotation
 
 preventing serialization loop
+
+Identity Core
+
+seeding identity in onmodelcreating
+
+jwt token based auth
+user secrets
+guid generator
+https://guidgenerator.com/online-guid-generator.aspx
+
+Claims
+
+https://jwt.io/
 

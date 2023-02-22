@@ -9,6 +9,8 @@ namespace BlazorApp.API.Infrastructure
         {
             CreateMap<AuthorCreateDto, Author>().ReverseMap();
             CreateMap<AuthorUpdateDto, Author>();
+
+            CreateMap<RegisterModel, ApplicationUser>().ReverseMap();
         }
     }
 }

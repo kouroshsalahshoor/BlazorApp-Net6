@@ -4,6 +4,7 @@ using BlazorApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorApp.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230221123233_applicationuser")]
+    partial class applicationuser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,9 +45,11 @@ namespace BlazorApp.API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -91,22 +96,6 @@ namespace BlazorApp.API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "efc04fbb-f801-4b5c-b7c0-0412723ac404",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "30956979-87aa-42a5-8e17-f25590f130d4",
-                            Email = "admin@x.x",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEKL3nD3/h9l8YmEBsLuI2327D71C/ZL3IMIZ4Jg0V03GmK/cCTlxvStykHUcAGhI8w==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "a0a75b94-61f2-4ea9-a2eb-a837360ad606",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("BlazorApp.API.Data.Author", b =>
@@ -192,22 +181,6 @@ namespace BlazorApp.API.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "f14c0cab-9a05-40ed-a87a-9d5b0e468e19",
-                            ConcurrencyStamp = "480f56ca-b571-4bad-953e-958041358d28",
-                            Name = "Admins",
-                            NormalizedName = "ADMINS"
-                        },
-                        new
-                        {
-                            Id = "452f15ad-1af8-47a6-8f19-44cebbeeaa88",
-                            ConcurrencyStamp = "926033f6-6ee2-4a36-ad2c-d5e31725d2f5",
-                            Name = "Users",
-                            NormalizedName = "USERS"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -295,13 +268,6 @@ namespace BlazorApp.API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "efc04fbb-f801-4b5c-b7c0-0412723ac404",
-                            RoleId = "f14c0cab-9a05-40ed-a87a-9d5b0e468e19"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

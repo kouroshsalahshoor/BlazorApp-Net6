@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlazorApp.API.Data;
 using BlazorApp.API.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace BlazorApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
@@ -68,6 +70,7 @@ namespace BlazorApp.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("/api/author/{id}")]
         //[HttpPut("{id}")]
+        [Authorize(Roles ="Admins")]
         public async Task<IActionResult> Put(int id, AuthorUpdateDto dto)
         {
             if (id != dto.Id)
@@ -110,6 +113,7 @@ namespace BlazorApp.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("/api/author")]
         //[HttpPost]
+        [Authorize(Roles ="Admins")]
         public async Task<ActionResult<Author>> Post(AuthorCreateDto dto)
         {
             var model = _mapper.Map<Author>(dto);
@@ -132,6 +136,7 @@ namespace BlazorApp.API.Controllers
         // DELETE: api/Authors/5
         [HttpDelete("/api/author/{id}")]
         //[HttpDelete("{id}")]
+        [Authorize(Roles ="Admins")]
         public async Task<IActionResult> Delete(int id)
         {
             var model = await _db.Authors.FindAsync(id);
