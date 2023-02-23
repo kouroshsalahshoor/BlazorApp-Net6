@@ -2,7 +2,6 @@
 using BlazorApp.API.Data;
 using BlazorApp.API.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -106,6 +105,7 @@ namespace BlazorApp.API.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 //new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(CustomClaimTypes.UserId, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
             }
             .Union(userClaims)
             .Union(roleClaims);

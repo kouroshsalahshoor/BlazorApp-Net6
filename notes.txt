@@ -47,3 +47,11 @@ Claims
 
 https://jwt.io/
 
+Blazor Server side
+
+NSwag
+https://github.com/RicoSuter/NSwag
+https://github.com/RicoSuter/NSwag/releases
+
+Newtonsoft.Json
+

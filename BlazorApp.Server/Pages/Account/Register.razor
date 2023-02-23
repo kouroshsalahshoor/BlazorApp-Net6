@@ -1,0 +1,83 @@
+﻿@page "/register"
+@inject IClient _httpClient
+@inject NavigationManager _navigationManager
+
+<div class="offset-md-3 col-md-6">
+    <h3>Register</h3>
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <div class="text-danger">
+            @_message
+        </div>
+    }
+
+    <div>
+        <EditForm Model="_model" OnValidSubmit="submit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">User Name</label>
+                <InputText class="form-control" @bind-Value="_model.UserName" />
+                @*<div class="form-text">We'll never share your email with anyone else.</div>*@
+                <ValidationMessage For="@(()=>_model.UserName)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <InputText class="form-control" type="password" @bind-Value="_model.Password" />
+                <ValidationMessage For="@(()=>_model.Password)" />
+            </div>
+            <button type="submit" class="btn btn-primary" disabled="@(_busy)">
+                @if (_busy)
+                {
+                    <div class="spinner-border spinner-border-sm text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                }
+                Submit
+            </button>
+        </EditForm>
+    </div>
+</div>
+@code {
+    private RegisterModel _model;
+    private string _message = string.Empty;
+    private bool _busy = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model = new RegisterModel
+            {
+                Role = "Users"
+            };
+    }
+
+    private async Task submit()
+    {
+        _message = string.Empty;
+        _busy = true;
+
+        try
+        {
+            await _httpClient.RegisterAsync(_model);
+
+            _navigationManager.NavigateTo("login");
+        }
+        catch (ApiException ex)
+        {
+            if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            {
+                _navigationManager.NavigateTo("login");
+            }
+            _message = ex.Response;
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+
+        _busy = false;
+
+    }
+}

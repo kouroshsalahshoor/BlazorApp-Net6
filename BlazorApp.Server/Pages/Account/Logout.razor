@@ -1,0 +1,41 @@
+﻿@page "/logout"
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authenticationStateProvider
+
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Logging out...</span>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <div class="text-danger">
+        @_message
+    </div>
+}
+
+@code {
+    private string _message = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            //change auth state
+            await ((ApiAuthenticationStateProvider)_authenticationStateProvider).Logout();
+
+            //await Task.Delay(2000);
+
+            _navigationManager.NavigateTo("/");
+        }
+        catch (ApiException ex)
+        {
+            _message = ex.Response;
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+    }
+}
