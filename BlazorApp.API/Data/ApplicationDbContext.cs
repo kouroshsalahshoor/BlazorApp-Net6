@@ -22,7 +22,7 @@ namespace BlazorApp.API.Data
             var usersRoleId = Guid.NewGuid().ToString();
 
             builder.Entity<IdentityRole>().HasData(
-             new IdentityRole { Id = adminsRoleId, Name = "Admins", NormalizedName = "ADMINS" },
+             new IdentityRole { Id = adminsRoleId, Name = "Admins", NormalizedName = "ADMINS"},
              new IdentityRole { Id = usersRoleId, Name = "Users", NormalizedName = "USERS" }
              );
 
@@ -31,7 +31,17 @@ namespace BlazorApp.API.Data
             var adminId = Guid.NewGuid().ToString();
 
             builder.Entity<ApplicationUser>().HasData(
-             new ApplicationUser { Id = adminId, UserName = "admin", Email = "admin@x.x", PasswordHash = hasher.HashPassword(null, "Secret_123") }
+             new ApplicationUser
+             {
+                 Id = adminId,
+                 UserName = "admin",
+                 NormalizedUserName = "ADMIN",
+                 Email = "admin@x.x",
+                 NormalizedEmail = "ADMIN@X.X",
+                 PasswordHash = hasher.HashPassword(null, "Secret_123"),
+                 PhoneNumberConfirmed = true,
+                 EmailConfirmed = true,
+             }
              );
 
             builder.Entity<IdentityUserRole<string>>().HasData(

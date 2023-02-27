@@ -2,7 +2,7 @@
 
 namespace BlazorApp.API.Data
 {
-    public class AuthorCreateDto
+    public class AuthorCreateEditDto : BaseDto
     {
         [Required]
         [StringLength(50)]

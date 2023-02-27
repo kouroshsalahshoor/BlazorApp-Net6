@@ -13,8 +13,12 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddHttpClient<IClient, Client>(options => options.BaseAddress = new Uri("https://localhost:7242"));
 
-builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+builder.Services.AddScoped<ApiAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<ApiAuthenticationStateProvider>());
+
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
+
+builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 var app = builder.Build();
 

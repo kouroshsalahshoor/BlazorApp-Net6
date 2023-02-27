@@ -1,0 +1,79 @@
+﻿@page "/author/{id:int}"
+
+@inject IAuthorService _service
+
+<h3>Details</h3>
+
+<EditForm Model="_model">
+    <fieldset disabled="true">
+        <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <InputText class="form-control" @bind-Value="_model.FirstName" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <InputText class="form-control" @bind-Value="_model.LastName" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Bio</label>
+            <InputTextArea class="form-control" @bind-Value="_model.Bio" />
+        </div>
+    </fieldset>
+
+    <h3>Books</h3>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Title</th>
+                <th scope="col">Isbn</th>
+                <th scope="col">Price</th>
+                <th scope="col">Year</th>
+                <th scope="col">Summary</th>
+                <th scope="col">Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _model.Books ?? new List<Book>())
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.Isbn</td>
+                    <td>@item.Price</td>
+                    <td>@item.Year</td>
+                    <td>@item.Summary</td>
+                    <td>@item.Year</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mb-3">
+        <a class="btn btn-light" href="/authors">
+            <span class="oi oi-media-skip-backward" aria-hidden="true"></span>
+            Back to list
+        </a>
+    </div>
+</EditForm>
+
+@code {
+    private Author _model = new();
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var response = await _service.GetById(Id);
+            if (response.Success)
+            {
+                _model = response.Data;
+            }
+        }
+    }
+}

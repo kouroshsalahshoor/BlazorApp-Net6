@@ -7,8 +7,7 @@ namespace BlazorApp.API.Infrastructure
     {
         public MapperConfig()
         {
-            CreateMap<AuthorCreateDto, Author>().ReverseMap();
-            CreateMap<AuthorUpdateDto, Author>();
+            CreateMap<AuthorCreateEditDto, Author>().ReverseMap();
 
             CreateMap<RegisterModel, ApplicationUser>().ReverseMap();
         }

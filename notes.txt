@@ -55,3 +55,4 @@ https://github.com/RicoSuter/NSwag/releases
 
 Newtonsoft.Json
 
+Authorization Restrictions

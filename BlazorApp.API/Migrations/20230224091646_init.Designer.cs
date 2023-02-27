@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorApp.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230221130131_seedidentity")]
-    partial class seedidentity
+    [Migration("20230224091646_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,15 +98,17 @@ namespace BlazorApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "efc04fbb-f801-4b5c-b7c0-0412723ac404",
+                            Id = "033d56f5-04d3-4796-8b43-d2d1fc2810e8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "30956979-87aa-42a5-8e17-f25590f130d4",
+                            ConcurrencyStamp = "b46706c9-58f9-4319-9ea8-f7db9be48b73",
                             Email = "admin@x.x",
-                            EmailConfirmed = false,
+                            EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEKL3nD3/h9l8YmEBsLuI2327D71C/ZL3IMIZ4Jg0V03GmK/cCTlxvStykHUcAGhI8w==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "a0a75b94-61f2-4ea9-a2eb-a837360ad606",
+                            NormalizedEmail = "ADMIN@X.X",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKCPKu/uEtISBrmKxTjifh+KXxjkw67W9Rq0NCXvjDFtYB62J+aqgpdj+XrNVA2J2w==",
+                            PhoneNumberConfirmed = true,
+                            SecurityStamp = "3525512b-ed9e-4299-8992-47412583904c",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -199,15 +201,15 @@ namespace BlazorApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f14c0cab-9a05-40ed-a87a-9d5b0e468e19",
-                            ConcurrencyStamp = "480f56ca-b571-4bad-953e-958041358d28",
+                            Id = "79cd7e39-a4d9-47dc-a393-2afb4286cec7",
+                            ConcurrencyStamp = "c6f1892a-34aa-47d2-ada8-51fcc0bafd13",
                             Name = "Admins",
                             NormalizedName = "ADMINS"
                         },
                         new
                         {
-                            Id = "452f15ad-1af8-47a6-8f19-44cebbeeaa88",
-                            ConcurrencyStamp = "926033f6-6ee2-4a36-ad2c-d5e31725d2f5",
+                            Id = "f13352aa-7042-4f8b-ad5c-4c888b0094c6",
+                            ConcurrencyStamp = "3f375eb0-95ea-4d38-b6e7-672d9a1295ee",
                             Name = "Users",
                             NormalizedName = "USERS"
                         });
@@ -302,8 +304,8 @@ namespace BlazorApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "efc04fbb-f801-4b5c-b7c0-0412723ac404",
-                            RoleId = "f14c0cab-9a05-40ed-a87a-9d5b0e468e19"
+                            UserId = "033d56f5-04d3-4796-8b43-d2d1fc2810e8",
+                            RoleId = "79cd7e39-a4d9-47dc-a393-2afb4286cec7"
                         });
                 });
 

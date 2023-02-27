@@ -14,7 +14,6 @@ namespace BlazorApp.Server.Services
         {
             _protectedLocalStorage = protectedLocalStorage;
             _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
-            //_jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {

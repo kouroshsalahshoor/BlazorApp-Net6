@@ -29,7 +29,7 @@ namespace BlazorApp.API.Controllers
         {
             try
             {
-                return await _db.Authors.Include(x=>x.Books).ToListAsync();
+                return await _db.Authors.Include(x => x.Books).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -43,7 +43,7 @@ namespace BlazorApp.API.Controllers
         //[HttpGet("{id}")]
         public async Task<ActionResult<Author>> Get(int id)
         {
-            var author = await _db.Authors.FindAsync(id);
+            var author = await _db.Authors.Include(x => x.Books).FirstOrDefaultAsync(x => x.Id == id);
 
             if (author == null)
             {
@@ -70,8 +70,8 @@ namespace BlazorApp.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("/api/author/{id}")]
         //[HttpPut("{id}")]
-        [Authorize(Roles ="Admins")]
-        public async Task<IActionResult> Put(int id, AuthorUpdateDto dto)
+        [Authorize(Roles = Roles.Admins)]
+        public async Task<IActionResult> Put(int id, AuthorCreateEditDto dto)
         {
             if (id != dto.Id)
             {
@@ -106,15 +106,16 @@ namespace BlazorApp.API.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
+            //return NoContent();
         }
 
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("/api/author")]
         //[HttpPost]
-        [Authorize(Roles ="Admins")]
-        public async Task<ActionResult<Author>> Post(AuthorCreateDto dto)
+        [Authorize(Roles = Roles.Admins)]
+        public async Task<ActionResult<Author>> Post(AuthorCreateEditDto dto)
         {
             var model = _mapper.Map<Author>(dto);
             _db.Authors.Add(model);
@@ -136,8 +137,8 @@ namespace BlazorApp.API.Controllers
         // DELETE: api/Authors/5
         [HttpDelete("/api/author/{id}")]
         //[HttpDelete("{id}")]
-        [Authorize(Roles ="Admins")]
-        public async Task<IActionResult> Delete(int id)
+        [Authorize(Roles = Roles.Admins)]
+        public async Task<ActionResult> Delete(int id)
         {
             var model = await _db.Authors.FindAsync(id);
             if (model == null)
@@ -152,11 +153,11 @@ namespace BlazorApp.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $">>> Error in {nameof(Put)}");
+                _logger.LogError(ex, $">>> Error in {nameof(Delete)}");
                 return StatusCode(500, ApiErrorMessages.Error500);
             }
 
-            return NoContent();
+            return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
         }
 
         private bool exists(int id)

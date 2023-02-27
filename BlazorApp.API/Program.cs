@@ -7,6 +7,7 @@ using Serilog;
 using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-    //options.EnableSensitiveDataLogging();//only in development
+    //options.EnableSensitiveDataLogging();//only in development    
 });
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -41,7 +42,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
-builder.Services.AddAuthentication(options=>
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -73,8 +74,8 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseAuthentication();//wrong order gives 401 error!!!
 app.UseAuthorization();
-app.UseAuthentication();
 
 app.MapControllers();
 

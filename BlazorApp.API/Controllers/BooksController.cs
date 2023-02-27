@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlazorApp.API.Data;
 using Microsoft.AspNetCore.Authorization;
+using BlazorApp.API.Infrastructure;
 
 namespace BlazorApp.API.Controllers
 {
@@ -46,7 +47,7 @@ namespace BlazorApp.API.Controllers
         // PUT: api/Books/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles ="Admins")]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<IActionResult> PutBook(int id, Book book)
         {
             if (id != book.Id)
@@ -78,7 +79,7 @@ namespace BlazorApp.API.Controllers
         // POST: api/Books
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles ="Admins")]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<ActionResult<Book>> PostBook(Book book)
         {
             _context.Books.Add(book);
@@ -89,7 +90,7 @@ namespace BlazorApp.API.Controllers
 
         // DELETE: api/Books/5
         [HttpDelete("{id}")]
-        [Authorize(Roles ="Admins")]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);
