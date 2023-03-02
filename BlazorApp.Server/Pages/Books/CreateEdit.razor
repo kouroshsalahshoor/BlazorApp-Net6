@@ -1,0 +1,210 @@
+﻿@page "/book/create"
+@page "/book/edit/{id:int}"
+
+@attribute [Authorize(Roles = Roles.Admins)]
+
+@inject IBookService _service
+@inject IAuthorService _authorService
+@inject NavigationManager _navigationManager
+@inject IMapper _mapper
+
+<h3>@(Id > 0 ? "Edit" : "Create")</h3>
+
+@if (_loading)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <p class="text-danger">@_message</p>
+}
+
+@*<EditForm Model="_model" OnSubmit="submit">*@
+<EditForm Model="_model" OnValidSubmit="validSubmit" OnInvalidSubmit="invalidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group mb-3">
+        <label class="form-label">Title</label>
+        <InputText class="form-control" @bind-Value="_model.Title" />
+        <ValidationMessage For="@(()=>_model.Title)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Price</label>
+        <InputNumber class="form-control" @bind-Value="_model.Price" />
+        <ValidationMessage For="@(()=>_model.Price)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">ISBN</label>
+        <InputText class="form-control" @bind-Value="_model.Isbn" />
+        <ValidationMessage For="@(()=>_model.Isbn)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Year</label>
+        <InputNumber class="form-control" @bind-Value="_model.Year" />
+        <ValidationMessage For="@(()=>_model.Year)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Summary</label>
+        <InputTextArea class="form-control" @bind-Value="_model.Summary" />
+        <ValidationMessage For="@(()=>_model.Summary)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Author</label>
+        <InputSelect class="form-select" @bind-Value="_model.AuthorId">
+            @if (_list.Any())
+            {
+                <option value="0" selected disabled>Please Select an Option</option>
+                @foreach (var item in _list)
+                {
+                    <option value="@item.Id">@item.FirstName @item.LastName</option>
+                }
+            }
+            else
+            {
+                <option value="0" selected disabled>There are NO Authers in Database</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(()=>_model.AuthorId)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Image</label>
+        <div>
+            <InputFile OnChange="fileUpload" class="form-control" />
+            @if (!string.IsNullOrEmpty(_img))
+            {
+                <img src="@_img" width="200" height="200" class="img-thumbnail my-3" />
+                @*<img src="@_img" width="200" height="200" class="img-thumbnail my-3" />*@
+            }
+            <p class="text-danger">@_fileUploadMessage</p>
+            <ValidationMessage For="@(()=>_model.Image)" />
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <button type="submit" class="btn btn-primary" disabled="@(_busy)">
+            @if (_busy)
+            {
+                <div class="spinner-border spinner-border-sm text-light" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            }
+            Submit
+        </button>
+        <button class="btn btn-light" @onclick="backToList">
+            <span class="oi oi-media-skip-backward" aria-hidden="true"></span>
+            Back to list
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    private BookCreateEditDto _model = new();
+    private string _message = string.Empty;
+    private bool _busy = false;
+    private List<AuthorDto> _list = new();
+    private string _fileUploadMessage = string.Empty;
+    private string _img = string.Empty;
+    private bool _loading = true;
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await _authorService.Get();
+        if (response.Success)
+        {
+            _list = response.Data;
+        }
+
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var response = await _service.Get(Id);
+            if (response.Success)
+            {
+                var data = response.Data;
+                _model = _mapper.Map<BookCreateEditDto>(data);
+            }
+        }
+
+        _loading = false;
+
+    }
+    private async Task submit()
+    {
+    }
+    private async Task invalidSubmit()
+    {
+    }
+    private async Task validSubmit()
+    {
+        _message = string.Empty;
+
+        if (Id > 0) //edit
+        {
+            var response = await _service.Edit(Id, _model);
+            if (response.Success)
+            {
+                backToList();
+            }
+        }
+        else
+        {
+            var response = await _service.Create(_model);
+            if (response.Success)
+            {
+                backToList();
+            }
+            else
+            {
+                _message = response.Message;
+            }
+        }
+    }
+
+    private void backToList()
+    {
+        _navigationManager.NavigateTo("/books");
+    }
+
+    private async Task fileUpload(InputFileChangeEventArgs e)
+    {
+        _fileUploadMessage = string.Empty;
+
+        var file = e.File;
+        if (file != null)
+        {
+            var ext = System.IO.Path.GetExtension(file.Name);
+            if (ext.ToLower().Contains("jpg") || ext.ToLower().Contains("png") || ext.ToLower().Contains("jpeg"))
+            {
+                var byteArray = new byte[file.Size];
+                await file.OpenReadStream().ReadAsync(byteArray);
+                string imageType = file.ContentType;
+                string base64String = Convert.ToBase64String(byteArray);
+
+                _model.Image = base64String;
+                _model.ImageName = file.Name;
+                _img = $"data:{imageType};base64,{base64String}";
+            }
+            else
+            {
+                _fileUploadMessage = "Please select a file ( .jpg, .png, .jpeg)";
+            }
+        }
+    }
+}

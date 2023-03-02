@@ -52,6 +52,7 @@ Blazor Server side
 NSwag
 https://github.com/RicoSuter/NSwag
 https://github.com/RicoSuter/NSwag/releases
+run always the api (f5) when you want to change
 
 Newtonsoft.Json
 

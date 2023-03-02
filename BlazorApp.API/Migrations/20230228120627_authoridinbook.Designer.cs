@@ -4,6 +4,7 @@ using BlazorApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorApp.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228120627_authoridinbook")]
+    partial class authoridinbook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,15 +100,15 @@ namespace BlazorApp.API.Migrations
                         {
                             Id = "99551026-e7fd-42f2-9f05-eec450b4fe81",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ffae85b0-abcf-4a0a-bae3-3d8d095d5e38",
+                            ConcurrencyStamp = "6a89204e-f583-4d73-bb6d-b36fe1a5ef9d",
                             Email = "admin@x.x",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@X.X",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBI04ShcNQhO64h6s68PH0N+q8ESutmwBCwbxYBPDz3R1pyYxesbBYvEmX34NA4wcg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBOwmpo5mTbsQfPQFofXftwQ2MtSKZQ78pGjeqi6hwLLtJfwfNqqXVa7dy4xa1YF9g==",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "be715930-a5fd-425c-a691-b08ee6ae28d9",
+                            SecurityStamp = "b46b5d47-51d3-4c50-8fab-51d37cbbf508",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -120,19 +123,13 @@ namespace BlazorApp.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -147,7 +144,7 @@ namespace BlazorApp.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
@@ -210,14 +207,14 @@ namespace BlazorApp.API.Migrations
                         new
                         {
                             Id = "e62a9c73-474e-4ed4-9c2c-3b71e3431461",
-                            ConcurrencyStamp = "444c987b-a365-43e8-abd2-e669000ef493",
+                            ConcurrencyStamp = "8fad4e16-0ed6-4096-89ee-580ab7036ce4",
                             Name = "Admins",
                             NormalizedName = "ADMINS"
                         },
                         new
                         {
                             Id = "f87e3da7-3d52-4ea3-900d-f4723aaa0bde",
-                            ConcurrencyStamp = "b385975c-23d8-4c24-acc8-a05561db2851",
+                            ConcurrencyStamp = "9bdd22ff-00d8-438d-8f01-6072daa39f29",
                             Name = "Users",
                             NormalizedName = "USERS"
                         });
@@ -340,9 +337,7 @@ namespace BlazorApp.API.Migrations
                 {
                     b.HasOne("BlazorApp.API.Data.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });

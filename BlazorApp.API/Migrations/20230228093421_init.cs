@@ -181,10 +181,10 @@ namespace BlazorApp.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
-                    ISBN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ISBN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Summary = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false)
@@ -205,19 +205,19 @@ namespace BlazorApp.API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "79cd7e39-a4d9-47dc-a393-2afb4286cec7", "c6f1892a-34aa-47d2-ada8-51fcc0bafd13", "Admins", "ADMINS" },
-                    { "f13352aa-7042-4f8b-ad5c-4c888b0094c6", "3f375eb0-95ea-4d38-b6e7-672d9a1295ee", "Users", "USERS" }
+                    { "e62a9c73-474e-4ed4-9c2c-3b71e3431461", "4dd8a528-7d9d-49f5-bc6b-a5794078fc12", "Admins", "ADMINS" },
+                    { "f87e3da7-3d52-4ea3-900d-f4723aaa0bde", "1e1f8ba8-6f2a-482f-a99c-494dafac6904", "Users", "USERS" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "033d56f5-04d3-4796-8b43-d2d1fc2810e8", 0, "b46706c9-58f9-4319-9ea8-f7db9be48b73", "admin@x.x", true, null, null, false, null, "ADMIN@X.X", "ADMIN", "AQAAAAEAACcQAAAAEKCPKu/uEtISBrmKxTjifh+KXxjkw67W9Rq0NCXvjDFtYB62J+aqgpdj+XrNVA2J2w==", null, true, "3525512b-ed9e-4299-8992-47412583904c", false, "admin" });
+                values: new object[] { "99551026-e7fd-42f2-9f05-eec450b4fe81", 0, "c7b03f2d-e302-4e85-825a-570300fa9b3a", "admin@x.x", true, null, null, false, null, "ADMIN@X.X", "ADMIN", "AQAAAAEAACcQAAAAEMdvXLwPjQcPJW5BWTBkXDFYcpfIzRB63UzUDBOua8BL0coIwg9C8RnW6hPLMOF9wQ==", null, true, "c6760f54-fa85-4be4-a256-ad6e031c25a7", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "79cd7e39-a4d9-47dc-a393-2afb4286cec7", "033d56f5-04d3-4796-8b43-d2d1fc2810e8" });
+                values: new object[] { "e62a9c73-474e-4ed4-9c2c-3b71e3431461", "99551026-e7fd-42f2-9f05-eec450b4fe81" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

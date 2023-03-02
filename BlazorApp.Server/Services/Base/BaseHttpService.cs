@@ -24,7 +24,7 @@ namespace BlazorApp.Server.Services.Base
                     PropertyNameCaseInsensitive = true
                 };
                 var data = JsonSerializer.Deserialize<T>(apiException.Response, options);
-                return new Response<T>() { Message = "Success.", Data = data, Success = true };
+                return new Response<T>() { Message = "Success.", Data = data!, Success = true };
             }
             else if (apiException.StatusCode == 400)
             {

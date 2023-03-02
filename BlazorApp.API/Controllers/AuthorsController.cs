@@ -4,6 +4,7 @@ using BlazorApp.API.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace BlazorApp.API.Controllers
 {
@@ -25,15 +26,17 @@ namespace BlazorApp.API.Controllers
 
         // GET: api/Authors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetList()
+        public async Task<ActionResult<IEnumerable<AuthorDto>>> Get()
         {
             try
             {
-                return await _db.Authors.Include(x => x.Books).ToListAsync();
+                var models = await _db.Authors.ToListAsync();
+                //var models = await _db.Authors.Include(x => x.Books).ToListAsync();
+                return Ok(_mapper.Map<IEnumerable<AuthorDto>>(models));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $">>> Error in {nameof(GetList)}");
+                _logger.LogError(ex, $">>> Error in Author {nameof(Get)}");
                 return StatusCode(500, ApiErrorMessages.Error500);
             }
         }
@@ -41,30 +44,26 @@ namespace BlazorApp.API.Controllers
         // GET: api/Authors/5
         [HttpGet("/api/author/{id}")]
         //[HttpGet("{id}")]
-        public async Task<ActionResult<Author>> Get(int id)
+        public async Task<ActionResult<AuthorDto>> Get(int id)
         {
-            var author = await _db.Authors.Include(x => x.Books).FirstOrDefaultAsync(x => x.Id == id);
-
-            if (author == null)
+            try
             {
-                return NotFound();
+                var model = await _db.Authors.FirstOrDefaultAsync(x => x.Id == id);
+                //var model = await _db.Authors.Include(x => x.Books).FirstOrDefaultAsync(x => x.Id == id);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                return _mapper.Map<AuthorDto>(model);
             }
-
-            return author;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $">>> Error in Author {nameof(Get)} with Id");
+                return StatusCode(500, ApiErrorMessages.Error500);
+            }
         }
-
-        //[HttpGet("/api/author/2/{id}")]
-        //public async Task<ActionResult<Author>> GetAuthor2(int id)
-        //{
-        //    var author = await _db.Authors.FindAsync(id);
-
-        //    if (author == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return author;
-        //}
 
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -78,14 +77,15 @@ namespace BlazorApp.API.Controllers
                 return BadRequest();
             }
 
-            var model = await _db.Authors.SingleOrDefaultAsync(x => x.Id == id);
+            var model = await _db.Authors.FindAsync(id);
             if (model == null)
             {
                 return NotFound();
             }
 
-            _mapper.Map(dto, model);
+            _db.Entry(model).State = EntityState.Detached;//!!!
 
+            model = _mapper.Map<Author>(dto);
             _db.Entry(model).State = EntityState.Modified;
 
             try
@@ -95,19 +95,18 @@ namespace BlazorApp.API.Controllers
             catch (Exception ex)
             //catch (DbUpdateConcurrencyException ex)
             {
-                if (!exists(id))
+                if (!await Exists(id))
                 {
                     return NotFound();
                 }
                 else
                 {
-                    _logger.LogError(ex, $">>> Error in {nameof(Put)}");
+                    _logger.LogError(ex, $">>> Error in Author {nameof(Put)}");
                     return StatusCode(500, ApiErrorMessages.Error500);
                 }
             }
 
             return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
-            //return NoContent();
         }
 
         // POST: api/Authors
@@ -115,10 +114,10 @@ namespace BlazorApp.API.Controllers
         [HttpPost("/api/author")]
         //[HttpPost]
         [Authorize(Roles = Roles.Admins)]
-        public async Task<ActionResult<Author>> Post(AuthorCreateEditDto dto)
+        public async Task<ActionResult<AuthorCreateEditDto>> Post(AuthorCreateEditDto dto)
         {
             var model = _mapper.Map<Author>(dto);
-            _db.Authors.Add(model);
+            await _db.Authors.AddAsync(model);
 
             try
             {
@@ -126,12 +125,11 @@ namespace BlazorApp.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $">>> Error in {nameof(Put)}");
+                _logger.LogError(ex, $">>> Error in Author {nameof(Post)}");
                 return StatusCode(500, ApiErrorMessages.Error500);
             }
 
             return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
-            //return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
         }
 
         // DELETE: api/Authors/5
@@ -148,21 +146,28 @@ namespace BlazorApp.API.Controllers
 
             try
             {
+                if (model.Books.Any())
+                {
+                    foreach (var item in model.Books)
+                    {
+                        _db.Books.Remove(item);
+                    }
+                }
                 _db.Authors.Remove(model);
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $">>> Error in {nameof(Delete)}");
+                _logger.LogError(ex, $">>> Error in Author {nameof(Delete)}");
                 return StatusCode(500, ApiErrorMessages.Error500);
             }
 
             return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
         }
 
-        private bool exists(int id)
+        private async Task<bool> Exists(int id)
         {
-            return _db.Authors.Any(e => e.Id == id);
+            return await _db.Authors.AnyAsync(e => e.Id == id);
         }
     }
 }

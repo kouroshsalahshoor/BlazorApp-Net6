@@ -4,6 +4,7 @@ using BlazorApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorApp.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228093421_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,15 +100,15 @@ namespace BlazorApp.API.Migrations
                         {
                             Id = "99551026-e7fd-42f2-9f05-eec450b4fe81",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ffae85b0-abcf-4a0a-bae3-3d8d095d5e38",
+                            ConcurrencyStamp = "c7b03f2d-e302-4e85-825a-570300fa9b3a",
                             Email = "admin@x.x",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@X.X",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBI04ShcNQhO64h6s68PH0N+q8ESutmwBCwbxYBPDz3R1pyYxesbBYvEmX34NA4wcg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMdvXLwPjQcPJW5BWTBkXDFYcpfIzRB63UzUDBOua8BL0coIwg9C8RnW6hPLMOF9wQ==",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "be715930-a5fd-425c-a691-b08ee6ae28d9",
+                            SecurityStamp = "c6760f54-fa85-4be4-a256-ad6e031c25a7",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -120,19 +123,13 @@ namespace BlazorApp.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -210,14 +207,14 @@ namespace BlazorApp.API.Migrations
                         new
                         {
                             Id = "e62a9c73-474e-4ed4-9c2c-3b71e3431461",
-                            ConcurrencyStamp = "444c987b-a365-43e8-abd2-e669000ef493",
+                            ConcurrencyStamp = "4dd8a528-7d9d-49f5-bc6b-a5794078fc12",
                             Name = "Admins",
                             NormalizedName = "ADMINS"
                         },
                         new
                         {
                             Id = "f87e3da7-3d52-4ea3-900d-f4723aaa0bde",
-                            ConcurrencyStamp = "b385975c-23d8-4c24-acc8-a05561db2851",
+                            ConcurrencyStamp = "1e1f8ba8-6f2a-482f-a99c-494dafac6904",
                             Name = "Users",
                             NormalizedName = "USERS"
                         });

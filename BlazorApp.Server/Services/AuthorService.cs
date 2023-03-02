@@ -13,26 +13,26 @@ namespace BlazorApp.Server.Services
             _client = client;
         }
 
-        public async Task<Response<Author>> Create(AuthorCreateEditDto model)
+        public async Task<Response<AuthorDto>> Create(AuthorCreateEditDto createDto)
         {
-            Response<Author> response = new();
+            Response<AuthorDto> response = new();
 
             try
             {
                 await GetBearerToken();
-                await _client.AuthorPOSTAsync(model);
+                await _client.AuthorPOSTAsync(createDto);
             }
             catch (ApiException ex)
             {
-                response = ConvertApiException<Author>(ex);
+                response = ConvertApiException<AuthorDto>(ex);
             }
 
             return response;
         }
 
-        public async Task<Response<Author>> Delete(int id)
+        public async Task<Response<AuthorDto>> Delete(int id)
         {
-            Response<Author> response = new();
+            Response<AuthorDto> response = new();
 
             try
             {
@@ -42,32 +42,32 @@ namespace BlazorApp.Server.Services
             }
             catch (ApiException ex)
             {
-                response = ConvertApiException<Author>(ex);
+                response = ConvertApiException<AuthorDto>(ex);
             }
 
             return response;
         }
 
-        public async Task<Response<Author>> Edit(int id, AuthorCreateEditDto model)
+        public async Task<Response<AuthorDto>> Edit(int id, AuthorCreateEditDto editDto)
         {
-            Response<Author> response = new();
+            Response<AuthorDto> response = new();
 
             try
             {
                 await GetBearerToken();
-                await _client.AuthorPUTAsync(id, model);
+                await _client.AuthorPUTAsync(id, editDto);
             }
             catch (ApiException ex)
             {
-                response = ConvertApiException<Author>(ex);
+                response = ConvertApiException<AuthorDto>(ex);
             }
 
             return response;
         }
 
-        public async Task<Response<List<Author>>> Get()
+        public async Task<Response<List<AuthorDto>>> Get()
         {
-            Response<List<Author>> response = new Response<List<Author>> { Success = true };
+            Response<List<AuthorDto>> response = new Response<List<AuthorDto>> { Success = true };
 
             try
             {
@@ -77,21 +77,21 @@ namespace BlazorApp.Server.Services
             }
             catch (ApiException ex)
             {
-                response = ConvertApiException<List<Author>>(ex);
+                response = ConvertApiException<List<AuthorDto>>(ex);
             }
 
             return response;
         }
 
-        public async Task<Response<Author>> GetById(int id)
+        public async Task<Response<AuthorDto>> Get(int id)
         {
-            Response<Author> response;
+            Response<AuthorDto> response;
 
             try
             {
                 await GetBearerToken();
                 var data = await _client.AuthorGETAsync(id);
-                response = new Response<Author>
+                response = new Response<AuthorDto>
                 {
                     Success = true,
                     Data = data
@@ -99,7 +99,7 @@ namespace BlazorApp.Server.Services
             }
             catch (ApiException ex)
             {
-                response = ConvertApiException<Author>(ex);
+                response = ConvertApiException<AuthorDto>(ex);
             }
 
             return response;

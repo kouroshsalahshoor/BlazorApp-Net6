@@ -18,8 +18,9 @@ namespace BlazorApp.API.Data
         {
             base.OnModelCreating(builder); //for identity tables
 
-            var adminsRoleId = Guid.NewGuid().ToString();
-            var usersRoleId = Guid.NewGuid().ToString();
+        //https://guidgenerator.com/online-guid-generator.aspx
+            var adminsRoleId = "e62a9c73-474e-4ed4-9c2c-3b71e3431461";
+            var usersRoleId = "f87e3da7-3d52-4ea3-900d-f4723aaa0bde";
 
             builder.Entity<IdentityRole>().HasData(
              new IdentityRole { Id = adminsRoleId, Name = "Admins", NormalizedName = "ADMINS"},
@@ -28,7 +29,7 @@ namespace BlazorApp.API.Data
 
             var hasher = new PasswordHasher<ApplicationUser>();
 
-            var adminId = Guid.NewGuid().ToString();
+            var adminId = "99551026-e7fd-42f2-9f05-eec450b4fe81";
 
             builder.Entity<ApplicationUser>().HasData(
              new ApplicationUser

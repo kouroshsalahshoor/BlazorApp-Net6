@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorApp.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230224091646_init")]
-    partial class init
+    [Migration("20230301111007_2")]
+    partial class _2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,17 +98,17 @@ namespace BlazorApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "033d56f5-04d3-4796-8b43-d2d1fc2810e8",
+                            Id = "99551026-e7fd-42f2-9f05-eec450b4fe81",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b46706c9-58f9-4319-9ea8-f7db9be48b73",
+                            ConcurrencyStamp = "7b08a068-a14e-4f0c-af5a-9dafabb8900e",
                             Email = "admin@x.x",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@X.X",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKCPKu/uEtISBrmKxTjifh+KXxjkw67W9Rq0NCXvjDFtYB62J+aqgpdj+XrNVA2J2w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEI6keoOPWM+JnpG1R4VlcXC/EWY4jvY1IWB6ngl5rHbkZEBT3PzR+yQSKo0PXBPsKg==",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "3525512b-ed9e-4299-8992-47412583904c",
+                            SecurityStamp = "e1812fa4-53db-4071-a226-ed29350c511f",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -123,13 +123,19 @@ namespace BlazorApp.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -148,6 +154,7 @@ namespace BlazorApp.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
@@ -157,10 +164,14 @@ namespace BlazorApp.API.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Summary")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -201,15 +212,15 @@ namespace BlazorApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "79cd7e39-a4d9-47dc-a393-2afb4286cec7",
-                            ConcurrencyStamp = "c6f1892a-34aa-47d2-ada8-51fcc0bafd13",
+                            Id = "e62a9c73-474e-4ed4-9c2c-3b71e3431461",
+                            ConcurrencyStamp = "ec6e6d6e-5998-4b31-b06a-f0212271927b",
                             Name = "Admins",
                             NormalizedName = "ADMINS"
                         },
                         new
                         {
-                            Id = "f13352aa-7042-4f8b-ad5c-4c888b0094c6",
-                            ConcurrencyStamp = "3f375eb0-95ea-4d38-b6e7-672d9a1295ee",
+                            Id = "f87e3da7-3d52-4ea3-900d-f4723aaa0bde",
+                            ConcurrencyStamp = "c053e72d-0057-44ea-b9f7-4da559f7a56b",
                             Name = "Users",
                             NormalizedName = "USERS"
                         });
@@ -304,8 +315,8 @@ namespace BlazorApp.API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "033d56f5-04d3-4796-8b43-d2d1fc2810e8",
-                            RoleId = "79cd7e39-a4d9-47dc-a393-2afb4286cec7"
+                            UserId = "99551026-e7fd-42f2-9f05-eec450b4fe81",
+                            RoleId = "e62a9c73-474e-4ed4-9c2c-3b71e3431461"
                         });
                 });
 

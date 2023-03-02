@@ -1,4 +1,5 @@
 using BlazorApp.Server.Data;
+using BlazorApp.Server.Infrastructure;
 using BlazorApp.Server.Services;
 using BlazorApp.Server.Services.Base;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -18,7 +19,10 @@ builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.Get
 
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 
+builder.Services.AddAutoMapper(typeof(MapperConfig));
+
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 var app = builder.Build();
 

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using BlazorApp.API.Data;
+using BlazorApp.API.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BlazorApp.API.Data;
-using Microsoft.AspNetCore.Authorization;
-using BlazorApp.API.Infrastructure;
+using System.Reflection;
 
 namespace BlazorApp.API.Controllers
 {
@@ -16,98 +13,168 @@ namespace BlazorApp.API.Controllers
     [Authorize]
     public class BooksController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
+        private readonly IMapper _mapper;
+        private readonly ILogger<BooksController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public BooksController(ApplicationDbContext context)
+        public BooksController(ApplicationDbContext db, IMapper mapper, ILogger<BooksController> logger, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _db = db;
+            _mapper = mapper;
+            _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<BookDto>>> Get()
         {
-            return await _context.Books.Include(x => x.Author).ToListAsync();
-        }
-
-        // GET: api/Books/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
-        {
-            var book = await _context.Books.FindAsync(id);
-
-            if (book == null)
+            try
             {
-                return NotFound();
+                var models = await _db.Books.ToListAsync();
+                //var models = await _db.Books.Include(x => x.Author).ToListAsync();
+                return Ok(_mapper.Map<IEnumerable<BookDto>>(models));
             }
-
-            return book;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $">>> Error in Book {nameof(Get)}");
+                return StatusCode(500, ApiErrorMessages.Error500);
+            }
         }
 
-        // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        [Authorize(Roles = Roles.Admins)]
-        public async Task<IActionResult> PutBook(int id, Book book)
+        [HttpGet("/api/book/{id}")]
+        public async Task<ActionResult<BookDto>> GetById(int id)
         {
-            if (id != book.Id)
+            try
+            {
+                var model = await _db.Books.SingleOrDefaultAsync(x => x.Id == id);
+                //var model = await _db.Books.Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                var dto = _mapper.Map<BookDto>(model);
+
+                return dto;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $">>> Error in Book {nameof(GetById)}");
+                return StatusCode(500, ApiErrorMessages.Error500);
+            }
+        }
+
+        [HttpPut("/api/book/{id}")]
+        [Authorize(Roles = Roles.Admins)]
+        public async Task<IActionResult> Put(int id, BookCreateEditDto dto)
+        {
+            if (id != dto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(book).State = EntityState.Modified;
+            var model = await _db.Books.FindAsync(id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            _db.Entry(model).State = EntityState.Detached;
+            
+            model = _mapper.Map<Book>(dto);
+
+            _db.Entry(model).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!BookExists(id))
+                if (!await Exists(id))
                 {
                     return NotFound();
                 }
                 else
                 {
-                    throw;
+                    _logger.LogError(ex, $">>> Error in Book {nameof(Put)}");
+                    return StatusCode(500, ApiErrorMessages.Error500);
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
         }
 
-        // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("/api/book")]
         [Authorize(Roles = Roles.Admins)]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<Book>> Post(BookCreateEditDto dto)
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+            var model = _mapper.Map<Book>(dto);
+            model.Image = saveImage(dto.Image, dto.ImageName);
 
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
+            _db.Entry(model).State = EntityState.Detached;
+            
+            await _db.Books.AddAsync(model);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $">>> Error in Book {nameof(Put)}");
+                return StatusCode(500, ApiErrorMessages.Error500);
+            }
+
+            return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
         }
 
-        // DELETE: api/Books/5
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/book/{id}")]
         [Authorize(Roles = Roles.Admins)]
-        public async Task<IActionResult> DeleteBook(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
+            var model = await _db.Books.FindAsync(id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _db.Books.Remove(model);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $">>> Error in Book {nameof(Delete)}");
+                return StatusCode(500, ApiErrorMessages.Error500);
+            }
 
-            return NoContent();
+            return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
         }
 
-        private bool BookExists(int id)
+        private async Task<bool> Exists(int id)
         {
-            return _context.Books.Any(e => e.Id == id);
+            return await _db.Books.AnyAsync(e => e.Id == id);
+        }
+
+        private string saveImage(string base64, string imageName)
+        {
+            var url = HttpContext.Request.Host.Value;
+            var ext = Path.GetExtension(imageName);
+            var fileName = $"{Guid.NewGuid()}.{ext}";
+            var path = _webHostEnvironment.WebRootPath + "\\images\\" + fileName;
+
+            byte[] image = Convert.FromBase64String(base64);
+
+            var fileStream = System.IO.File.Create(path);
+            fileStream.Write(image, 0, image.Length);
+            fileStream.Close();
+
+            return $"https://{url}/images/{fileName}";
         }
     }
 }

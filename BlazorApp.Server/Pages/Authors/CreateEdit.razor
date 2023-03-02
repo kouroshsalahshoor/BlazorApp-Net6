@@ -8,6 +8,15 @@
 
 <h3>@(Id > 0 ? "Edit" : "Create")</h3>
 
+@if (_loading)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
 @if (!string.IsNullOrEmpty(_message))
 {
     <p class="text-danger">@_message</p>
@@ -17,25 +26,25 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="mb-3">
+    <div class="form-group mb-3">
         <label class="form-label">First Name</label>
         <InputText class="form-control" @bind-Value="_model.FirstName" />
         <ValidationMessage For="@(()=>_model.FirstName)" />
     </div>
 
-    <div class="mb-3">
+    <div class="form-group mb-3">
         <label class="form-label">Last Name</label>
         <InputText class="form-control" @bind-Value="_model.LastName" />
         <ValidationMessage For="@(()=>_model.LastName)" />
     </div>
 
-    <div class="mb-3">
+    <div class="form-group mb-3">
         <label class="form-label">Bio</label>
         <InputTextArea class="form-control" @bind-Value="_model.Bio" />
         <ValidationMessage For="@(()=>_model.Bio)" />
     </div>
 
-    <div class="mb-3">
+    <div class="form-group mb-3">
         <button type="submit" class="btn btn-primary" disabled="@(_busy)">
             @if (_busy)
             {
@@ -55,6 +64,7 @@
 @code {
     private AuthorCreateEditDto _model = new();
     private string _message = string.Empty;
+    private bool _loading = true;
     private bool _busy = false;
 
     [Parameter] public int Id { get; set; }
@@ -63,7 +73,7 @@
     {
         if (Id > 0)
         {
-            var response = await _service.GetById(Id);
+            var response = await _service.Get(Id);
             if (response.Success)
             {
                 var data = response.Data;
@@ -74,32 +84,36 @@
                 _model.Bio = data.Bio;
             }
         }
+
+        _loading = false;
     }
 
     private async Task submit()
     {
+        _busy = true;
         _message = string.Empty;
+
+        Response<AuthorDto> response;
 
         if (Id > 0) //edit
         {
-            var response = await _service.Edit(Id, _model);
-            if (response.Success)
-            {
-                backToList();
-            }
+            response = await _service.Edit(Id, _model);
         }
         else
         {
-            var response = await _service.Create(_model);
-            if (response.Success)
-            {
-                backToList();
-            }
-            else
-            {
-                _message = response.Message;
-            }
+            response = await _service.Create(_model);
         }
+
+        if (response.Success)
+        {
+            backToList();
+        }
+        else
+        {
+            _message = response.Message;
+        }
+
+        _busy = false;
     }
 
     private void backToList()

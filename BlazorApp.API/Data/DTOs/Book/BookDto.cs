@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorApp.API.Data
 {
-    public class Book
+    public class BookDto
     {
         public int Id { get; set; }
         [Required]
@@ -23,7 +23,7 @@ namespace BlazorApp.API.Data
         [Range(0, int.MaxValue)]
         public decimal Price { get; set; }
 
-        public int? AuthorId { get; set; }
-        public virtual Author? Author { get; set; }
+        public int AuthorId { get; set; }
+        public string AuthorName { get; set; }
     }
 }

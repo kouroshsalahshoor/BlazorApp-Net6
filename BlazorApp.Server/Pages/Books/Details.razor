@@ -1,7 +1,6 @@
-﻿@page "/author/{id:int}"
+﻿@page "/book/{id:int}"
 
 @inject IAuthorService _service
-@inject IBookService _bookService
 
 <h3>Details</h3>
 
@@ -23,7 +22,7 @@
         </div>
     </fieldset>
 
-    @*<h3>Books</h3>
+   @* <h3>Books</h3>
 
     <table class="table table-hover">
         <thead>

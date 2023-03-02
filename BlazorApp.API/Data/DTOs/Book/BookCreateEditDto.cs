@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorApp.API.Data
 {
-    public class Book
+    public class BookCreateEditDto
     {
         public int Id { get; set; }
         [Required]
@@ -18,12 +18,12 @@ namespace BlazorApp.API.Data
         [Required]
         [StringLength(250, MinimumLength = 10)]
         public string Summary { get; set; }
-        public string? Image { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         [Range(0, int.MaxValue)]
         public decimal Price { get; set; }
+        public string? Image { get; set; }
+        public string? ImageName { get; set; }
 
-        public int? AuthorId { get; set; }
-        public virtual Author? Author { get; set; }
+        public int AuthorId { get; set; }
     }
 }

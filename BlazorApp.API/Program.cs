@@ -3,11 +3,10 @@ using BlazorApp.API.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
-using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-    //options.EnableSensitiveDataLogging();//only in development    
+    options.EnableSensitiveDataLogging();//only in development    
 });
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -71,6 +70,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseCors("AllowAll");
 

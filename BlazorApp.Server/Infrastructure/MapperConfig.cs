@@ -1,20 +1,18 @@
 ﻿using AutoMapper;
-using BlazorApp.API.Data;
+using BlazorApp.Server.Services.Base;
 
-namespace BlazorApp.API.Infrastructure
+namespace BlazorApp.Server.Infrastructure
 {
     public class MapperConfig : Profile
     {
         public MapperConfig()
         {
-            CreateMap<AuthorDto, Author>().ReverseMap();
             CreateMap<AuthorCreateEditDto, Author>().ReverseMap();
+            CreateMap<AuthorCreateEditDto, AuthorDto>().ReverseMap();
 
-
-            CreateMap<BookDto, Book>().ReverseMap();
             CreateMap<BookCreateEditDto, Book>().ReverseMap();
+            CreateMap<BookCreateEditDto, BookDto>().ReverseMap();
 
-            CreateMap<RegisterModel, ApplicationUser>().ReverseMap();
         }
     }
 }

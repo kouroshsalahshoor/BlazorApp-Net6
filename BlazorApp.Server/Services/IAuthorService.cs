@@ -4,11 +4,11 @@ namespace BlazorApp.Server.Services
 {
     public interface IAuthorService
     {
-        Task<Response<List<Author>>> Get();
-        Task<Response<Author>> GetById(int id);
-        Task<Response<Author>> Create(AuthorCreateEditDto model);
-        Task<Response<Author>> Edit(int id, AuthorCreateEditDto model);
-        Task<Response<Author>> Delete(int id);
+        Task<Response<List<AuthorDto>>> Get();
+        Task<Response<AuthorDto>> Get(int id);
+        Task<Response<AuthorDto>> Create(AuthorCreateEditDto createDto);
+        Task<Response<AuthorDto>> Edit(int id, AuthorCreateEditDto editDto);
+        Task<Response<AuthorDto>> Delete(int id);
 
     }
 }
