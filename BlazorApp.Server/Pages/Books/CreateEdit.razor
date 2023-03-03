@@ -12,11 +12,7 @@
 
 @if (_loading)
 {
-    <div class="d-flex justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
+    <Loading />
 }
 
 @if (!string.IsNullOrEmpty(_message))
@@ -25,7 +21,8 @@
 }
 
 @*<EditForm Model="_model" OnSubmit="submit">*@
-<EditForm Model="_model" OnValidSubmit="validSubmit" OnInvalidSubmit="invalidSubmit">
+@*<EditForm Model="_model" OnValidSubmit="validSubmit" OnInvalidSubmit="invalidSubmit">*@
+<EditForm Model="_model" OnValidSubmit="submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -145,13 +142,10 @@
         _loading = false;
 
     }
-    private async Task submit()
-    {
-    }
     private async Task invalidSubmit()
     {
     }
-    private async Task validSubmit()
+    private async Task submit()
     {
         _message = string.Empty;
 

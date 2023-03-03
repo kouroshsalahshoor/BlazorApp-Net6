@@ -1,67 +1,71 @@
 ﻿@page "/book/{id:int}"
 
-@inject IAuthorService _service
+@inject IBookService _service
 
 <h3>Details</h3>
 
+@if (_loading)
+{
+    <Loading />
+}
+
 <EditForm Model="_model">
     <fieldset disabled>
-        <div class="mb-3">
-            <label class="form-label">First Name</label>
-            <InputText class="form-control" @bind-Value="_model.FirstName" />
+        <div class="form-group mb-3">
+            <label class="form-label">Title</label>
+            <InputText class="form-control" @bind-Value="_model.Title" />
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Last Name</label>
-            <InputText class="form-control" @bind-Value="_model.LastName" />
+        <div class="form-group mb-3">
+            <label class="form-label">Price</label>
+            <InputNumber class="form-control" @bind-Value="_model.Price" />
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Bio</label>
-            <InputTextArea class="form-control" @bind-Value="_model.Bio" />
+        <div class="form-group mb-3">
+            <label class="form-label">ISBN</label>
+            <InputText class="form-control" @bind-Value="_model.Isbn" />
         </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Year</label>
+            <InputNumber class="form-control" @bind-Value="_model.Year" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Summary</label>
+            <InputTextArea class="form-control" @bind-Value="_model.Summary" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Author</label>
+            <InputText class="form-control" @bind-Value="_model.AuthorName" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Image</label>
+            <div>
+                <img src="@_model.Image" width="200" height="200" class="img-thumbnail my-3" />
+            </div>
+        </div>
+
     </fieldset>
 
-   @* <h3>Books</h3>
-
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
-                <th scope="col">Isbn</th>
-                <th scope="col">Price</th>
-                <th scope="col">Year</th>
-                <th scope="col">Summary</th>
-                <th scope="col">Image</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in _model.Books ?? new List<Book>())
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>@item.Isbn</td>
-                    <td>@item.Price</td>
-                    <td>@item.Year</td>
-                    <td>@item.Summary</td>
-                    <td>@item.Year</td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
-
     <div class="mb-3">
-        <a class="btn btn-light" href="/authors">
+        <a class="btn btn-light" href="/books">
             <span class="oi oi-media-skip-backward" aria-hidden="true"></span>
             Back to list
+        </a>
+
+        <a class="btn btn-warning" href="/book/edit/@_model.Id">
+            <span class="oi oi-pencil" aria-hidden="true"></span>
+            Edit
         </a>
     </div>
 </EditForm>
 
 @code {
-    private AuthorDto _model = new();
+    private BookDto _model = new();
+    private bool _loading = true;
 
     [Parameter] public int Id { get; set; }
 
@@ -75,5 +79,7 @@
                 _model = response.Data;
             }
         }
+
+        _loading = false;
     }
 }

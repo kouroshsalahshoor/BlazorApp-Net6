@@ -48,8 +48,8 @@ namespace BlazorApp.API.Controllers
         {
             try
             {
-                var model = await _db.Books.SingleOrDefaultAsync(x => x.Id == id);
-                //var model = await _db.Books.Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id);
+                var model = await _db.Books.Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id);
+                //var model = await _db.Books.SingleOrDefaultAsync(x => x.Id == id);
 
                 if (model == null)
                 {
@@ -57,6 +57,7 @@ namespace BlazorApp.API.Controllers
                 }
 
                 var dto = _mapper.Map<BookDto>(model);
+                dto.AuthorName = model.Author?.FirstName + " " + model.Author?.LastName;
 
                 return dto;
             }
@@ -83,13 +84,15 @@ namespace BlazorApp.API.Controllers
             }
 
             _db.Entry(model).State = EntityState.Detached;
-            
+
             model = _mapper.Map<Book>(dto);
-
-            _db.Entry(model).State = EntityState.Modified;
-
+            
             try
             {
+                //model.Image = saveImage(dto.Image, dto.ImageName);
+
+                _db.Entry(model).State = EntityState.Modified;
+
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -113,14 +116,14 @@ namespace BlazorApp.API.Controllers
         public async Task<ActionResult<Book>> Post(BookCreateEditDto dto)
         {
             var model = _mapper.Map<Book>(dto);
-            model.Image = saveImage(dto.Image, dto.ImageName);
-
-            _db.Entry(model).State = EntityState.Detached;
-            
-            await _db.Books.AddAsync(model);
 
             try
             {
+                //model.Image = saveImage(dto.Image, dto.ImageName);
+
+                _db.Entry(model).State = EntityState.Detached;
+
+                await _db.Books.AddAsync(model);
                 await _db.SaveChangesAsync();
             }
             catch (Exception ex)
